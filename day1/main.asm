@@ -6,7 +6,7 @@ section .rodata
 	inputbufferlen equ 9590
 	arraylen equ 2000
 
-	result1_string db "part 1: %d", 10, 0
+	result_string db "part %d: %d", 10, 0
 
 section .bss
 	inputbuffer resb inputbufferlen
@@ -40,22 +40,50 @@ main:
 	xor rax, rax
 	xor rbx, rbx
 
-.loop:
+.loop1:
 	mov eax, [r12+rcx]		; prev
 	add rcx, 4				; index
 	mov ebx, [r12+rcx]		; curr
 
-	cmp rax, rbx
-	jg .decrement
+	cmp eax, ebx
+	jge .decrement1
 	inc rdx					; increment count
 
-.decrement:
-	cmp rcx, arraylen*4
-	jl .loop
+.decrement1:
+	cmp rcx, arraylen*4-4
+	jl .loop1
 
-	mov rsi, rdx
-	mov rdi, result1_string
+	mov rsi, 1
+	mov rdi, result_string
 	xor rax, rax			; this is somehow essential for printf to work
+	call printf
+
+	; Part 2
+	xor rcx, rcx			; this will be the offset again
+	xor rdx, rdx			; the increment counter
+
+	mov rcx, 8
+
+.loop2:
+	mov eax, [r12+rcx-8]
+	add eax, [r12+rcx-4]
+	add eax, [r12+rcx]	; sum of first window
+	add rcx, 4
+	mov ebx, [r12+rcx-8]
+	add ebx, [r12+rcx-4]
+	add ebx, [r12+rcx]	; sum of second window
+
+	cmp eax, ebx
+	jge .decrement2
+	inc rdx					; increment count
+
+.decrement2:
+	cmp rcx, arraylen*4-4
+	jl .loop2
+
+	mov rsi, 2
+	mov rdi, result_string
+	xor rax, rax
 	call printf
 
 	ret
