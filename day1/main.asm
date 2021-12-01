@@ -26,6 +26,21 @@ main:
 	mov rsi, arraylen
 	call int_parse
 
-	;mov rax, [array]
+	mov r12, rax		; save array to r12
+	xor rcx,rcx
+	xor rdx, rdx
 
+.loop:
+	mov rax, [r12+rcx]		; prev
+	add rcx, 4				; index
+	mov rbx, [r12+rcx]		; curr
+
+	cmp rax, rbx
+	jl .less
+	inc rdx					; increment count
+.less:
+	cmp rcx, 400
+	jl .loop
+
+	mov rax, rdx
 	ret

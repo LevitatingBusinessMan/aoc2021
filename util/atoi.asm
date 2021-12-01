@@ -48,9 +48,10 @@ int_parse:
 	mov [rbp], eax		; reset the stack var
 
 	xor rcx, rcx
-	cmp rdx, 400 			; this 400 should be dynamic (integers in array * 4)
+	cmp rdx, r14 			; this 400 should be dynamic (integers in array * 4)
 	jl .fetch_int			; parse more if less than 8000
+
+	mov rax, r13
 
 	leave
 	ret
-
