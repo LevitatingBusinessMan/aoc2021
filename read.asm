@@ -72,6 +72,8 @@ read_file:
 	mov [rsi], byte 0
 
 	mov rax, inputbuffer
+	mov rdx, rsi
+	sub rdx, inputbuffer ; rdx is now the length of bytes written
 
 .close_fd:
 	push rax
