@@ -32,6 +32,7 @@ read_file:
 	enter 0, 0
 
 	mov [inputbufferlen], rsi
+	mov [inputbuffer], rdi
 
 	; address should be loaded to rdi by caller
 	mov rax, NR_OPEN			; set our syscall to 'open'
@@ -42,10 +43,6 @@ read_file:
 	jl .exit
 
 	mov [filedescriptor], rax	; save the fd
-
-	mov rdi, [inputbufferlen]
-	call malloc
-	mov [inputbuffer], rax
 
 	; read the input file
 	mov rdi, [filedescriptor]	; load the file descriptor into rdi
