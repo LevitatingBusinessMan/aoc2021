@@ -35,13 +35,12 @@ main:
 	xor rbx, rbx				; offset
 	xor r13, r14
 
-	enter 16, 0					; 4 32bit values
-	mov qword [rbp], qword 0	; make sure these are all 0
-	mov qword [rbp+8], qword 0	
+	enter 12, 0					; 3 32bit values
+	mov qword [rbp], qword 0	; make sure these are all 0 (not sure why that was necessary)
+	mov dword [rbp+8], dword 0	
 
 	; horizontal
-	; depth1
-	; aim
+	; aim/depth1
 	; depth2
 
 .parse_line:
@@ -77,19 +76,17 @@ main:
 
 .forward:
 	add [rbp], r14			; horizontal
-	mov rax, [rbp+8]		; aim
+	mov rax, [rbp+4]		; aim/depth1
 	imul rax, r14
-	add [rbp+12], rax		; depth2
+	add [rbp+8], rax		; depth2
 	jmp .parse_line
 
 .up:
-	sub [rbp+4], r14		; depth1
-	sub [rbp+8], r14		; aim
+	sub [rbp+4], r14		; aim/depth1
 	jmp .parse_line
 
 .down:
-	add [rbp+4], r14		; depth1
-	add [rbp+8], r14		; aim
+	add [rbp+4], r14		; aim/depth1
 	jmp .parse_line
 
 .error:
@@ -115,7 +112,7 @@ main:
 	mov rdi, resultstr
 	mov rsi, 2
 	mov rdx, [rbp]
-	mov rcx, [rbp+12]
+	mov rcx, [rbp+8]
 	mov r8, [rbp]
 	imul r8, rcx
 	call printf

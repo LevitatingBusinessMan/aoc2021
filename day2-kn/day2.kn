@@ -1,0 +1,38 @@
+= "file" OPEN_FD "input.txt" "r"
+= "lines" SPLIT READ_FD file "
+"
+= "fn_i" 1
+FN "FIND_NUMBER" "array"
+	; = "char" INDEX fn_i array
+	IF ! || || || || || || || || || == char "0" == char "1" == char "2" == char "3" == char "4" == char "5" == char "6" == char "7" == char "8" == char "9"
+		; GLOBAL= "fn_i" + fn_i 1
+		FIND_NUMBER array
+
+= "horizontal" 0
+= "aim" 0
+= "depth" 0
+
+= "index" 1
+FN "LOOP" ""
+	; = "chars" SPLIT INDEX index lines ""
+	; = "first_char" INDEX 1 chars
+	; GLOBAL= "fn_i" 1
+	; FIND_NUMBER chars
+	; = "number" ATOI INDEX fn_i chars
+	; IF == first_char "f"
+		; GLOBAL= "horizontal" + horizontal number
+		GLOBAL= "depth" + depth * aim number
+	; IF == first_char "u"
+		GLOBAL= "aim" - aim number
+	; IF == first_char "d"
+		GLOBAL= "aim" + aim number
+	IF < index - LENGTH lines 1 # -1 needed for some reason
+		; GLOBAL= "index" + index 1
+		LOOP
+
+LOOP
+
+WRITE_FD 1 "part 1: "
+ECHO * horizontal aim
+WRITE_FD 1 "part 2: "
+ECHO * horizontal depth
