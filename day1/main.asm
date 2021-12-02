@@ -67,11 +67,11 @@ main:
 .loop2:
 	mov eax, [r12+rcx-8]
 	add eax, [r12+rcx-4]
-	add eax, [r12+rcx]	; sum of first window
+	add eax, [r12+rcx]		; sum of first window
 	add rcx, 4
 	mov ebx, [r12+rcx-8]
 	add ebx, [r12+rcx-4]
-	add ebx, [r12+rcx]	; sum of second window
+	add ebx, [r12+rcx]		; sum of second window
 
 	cmp eax, ebx
 	jge .decrement2
