@@ -2,7 +2,7 @@ section .rodata
 	inputfilename db "input.txt", 0
 	inputbufferlen equ 7844
 	errorstr db "error", 10, 0
-	resultstr db "part%d: h%d d%d *%d", 0
+	resultstr db "part%d: h%d d%d *%d", 10, 0
 
 section .bss
 	inputbuffer resb inputbufferlen
@@ -35,7 +35,14 @@ main:
 	xor rbx, rbx				; offset
 	xor r13, r14
 
-	enter 16, 0
+	enter 16, 0					; 4 32bit values
+	mov qword [rbp], qword 0	; make sure these are all 0
+	mov qword [rbp+8], qword 0	
+
+	; horizontal
+	; depth1
+	; aim
+	; depth2
 
 .parse_line:
 	cmp rbx, inputbufferlen-1	; -1 because of the null byte
@@ -69,15 +76,20 @@ main:
 	jmp .error
 
 .forward:
-	add [rbp], r14
+	add [rbp], r14			; horizontal
+	mov rax, [rbp+8]		; aim
+	imul rax, r14
+	add [rbp+12], rax		; depth2
 	jmp .parse_line
 
 .up:
-	sub [rbp+4], r14
+	sub [rbp+4], r14		; depth1
+	sub [rbp+8], r14		; aim
 	jmp .parse_line
 
 .down:
-	add [rbp+4], r14
+	add [rbp+4], r14		; depth1
+	add [rbp+8], r14		; aim
 	jmp .parse_line
 
 .error:
@@ -99,5 +111,16 @@ main:
 	imul r8, rcx
 	call printf
 
+	xor rax, rax
+	mov rdi, resultstr
+	mov rsi, 2
+	mov rdx, [rbp]
+	mov rcx, [rbp+12]
+	mov r8, [rbp]
+	imul r8, rcx
+	call printf
+
 	leave
-	ret
+	mov     rax, 60
+	xor     rdi, rdi
+	syscall
