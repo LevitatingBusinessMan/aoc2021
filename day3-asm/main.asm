@@ -1,9 +1,9 @@
 section .rodata
 	inputfilename db "input.txt", 0
 	inputbufferlen equ 13001
-	arraylen equ 12
+	arraylen equ 1000
 	resultstr db "part1 g%d e%d m%d",10,0
-	bitarraylen equ 5
+	bitarraylen equ 12
 
 section .bss
 	inputbuffer resb inputbufferlen
@@ -99,7 +99,3 @@ main:
 	call part2
 
 	ret
-
-;001010001110=654
-
-;111010101010

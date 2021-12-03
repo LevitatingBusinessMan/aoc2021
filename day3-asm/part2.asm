@@ -1,13 +1,15 @@
 
 section .rodata
-	columnlen equ 5
-	rowlen equ 12
+	columnlen equ 12
+	rowlen equ 1000
+	resultstr db "part2 o%d c%d m%d", 10, 0
 
 section .bss
 	bitbuffy resb columnlen
 
 section .text
 	global part2
+	extern printf
 
 part2:
 	mov r12, rdi 		; inputbuffer
@@ -76,19 +78,52 @@ part2:
 
 .finished_column:
 	cmp rax, rbx
-	jg .greater
+	jge .greater
 	mov byte [bitbuffy+rcx], 0
-	jmp .foo
+	jmp .continue
 .greater:
 	mov byte [bitbuffy+rcx], 1
-.foo:
+.continue:
 	inc rcx
 	cmp rcx, columnlen
-	jge .continue
+	jge .finale
 	xor rdx, rdx					; reset row index
 	xor rax, rax					; reset counters for the next column
 	xor rbx, rbx
 	jmp .count_bit
 
-.continue:
+.finale:
+
+	mov rcx, columnlen	; index bitbuffy
+	xor rax, rax		; OXYGEN GENERATOR RATING
+	xor rbx, rbx		; CO2 SCRUBBER RATING
+
+.next_bit:
+	dec rcx
+	movzx r11, byte [bitbuffy+rcx]
+	mov rdx, columnlen-1
+	sub rdx, rcx
+	cmp rdx, 0
+	jle .finish_shifting
+.left_shift:
+	shl r11, 1
+	dec rdx
+	cmp rdx, 0
+	jg .left_shift
+
+.finish_shifting:
+	add rax, r11
+	cmp rcx, 0
+	jg .next_bit
+
+	mov rdi, resultstr
+	mov rsi, rax
+	mov rdx, 0xffffffffffffffff
+	shr rdx, 64-columnlen
+	xor rdx, rsi
+	mov rcx, rdx
+	imul rcx, rsi
+	call printf
+; 011110000110 right
+; 011110001111 mine
 	ret
