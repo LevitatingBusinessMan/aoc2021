@@ -1,7 +1,7 @@
 
 section .rodata
-	columnlen equ 5
-	rowlen equ 12
+	columnlen equ 12
+	rowlen equ 1000
 
 section .bss
 	bitbuffy resb columnlen
@@ -17,6 +17,8 @@ part2:
 	xor rbx, rbx		; counter for 0
 	xor rcx, rcx		; column
 	xor rdx, rdx		; row
+	xor rsi, rsi 		; skips performed
+	xor r9, r9
 
 .count_bit:
 
@@ -48,6 +50,11 @@ part2:
 
 .skip:
 	inc rdx
+	inc rsi
+	cmp rsi, rowlen-1
+	jne .foo
+	mov r9, 1
+.foo:
 	cmp rdx, rowlen
 	jge .finished_column
 	jmp .count_bit
@@ -76,6 +83,8 @@ part2:
 	jmp .count_bit
 
 .finished_column:
+	cmp r9, 1
+	je .oxygen
 	cmp r8, 0
 	je .oxygen
 	jne .nitrodiox
@@ -100,6 +109,7 @@ part2:
 	cmp rcx, columnlen
 	jge .finale
 	xor rdx, rdx					; reset row index
+	xor rsi, rsi
 	xor rax, rax					; reset counters for the next column
 	xor rbx, rbx
 	jmp .count_bit

@@ -1,10 +1,10 @@
 section .rodata
 	inputfilename db "input.txt", 0
 	inputbufferlen equ 13001
-	arraylen equ 12
+	arraylen equ 1000
 	resultstr db "part1 g%d e%d m%d",10,0
 	resultstr2 db "part2 o%d c%d m%d", 10, 0
-	bitarraylen equ 5
+	bitarraylen equ 12
 
 section .bss
 	inputbuffer resb inputbufferlen
@@ -96,18 +96,13 @@ main:
 	imul rcx, rdx
 	call printf
 
-	;
-	; 	Part 2 more or less works
-	;	What it doesn't do is stop when it has discarded all rows except one
-	;	Instead it keeps going using the existing rules
-	;
-
 	mov rdi, inputbuffer-12	; not sure why that's necessary
 	xor r8,r8				; 02 mode
 	call part2
-	mov r9, rax
+	push rax
 	mov r8, 1				; c02 mode
 	call part2
+	pop r9
 
 	mov rdi, resultstr2
 	mov rdx, rax
