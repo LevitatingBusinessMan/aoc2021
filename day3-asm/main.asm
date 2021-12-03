@@ -1,14 +1,14 @@
 section .rodata
 	inputfilename db "input.txt", 0
 	inputbufferlen equ 13001
-	arraylen equ 4
+	arraylen equ 1000
 	resultstr db "g%d e%d m%d",10,0
-	bitarraylen equ 5
+	bitarraylen equ 12
 
 section .bss
 	inputbuffer resb inputbufferlen
 	array resb arraylen*4
-	bitbuffer resb bitarraylen
+	bitbuffer resd bitarraylen
 
 section .text
 	global main
@@ -41,9 +41,9 @@ main:
 	je .newline
 	cmp al, 0x30
 	je .0
-	mov r11, [bitbuffer+rcx]
+	mov r11, [bitbuffer+rcx*2]
 	inc r11
-	mov [bitbuffer+rcx], r11
+	mov [bitbuffer+rcx*2], r11
 .0:
 	inc rcx
 	inc r12
@@ -63,7 +63,8 @@ main:
 .count:
 	cmp rcx, bitarraylen
 	jge .finish
-	cmp byte [bitbuffer+rcx], arraylen/2
+	movzx rdi, word [bitbuffer+rcx*2]
+	cmp word [bitbuffer+rcx*2], arraylen/2
 	jl .notgreater
 
 	xor r11,r11
@@ -96,4 +97,6 @@ main:
 
 	ret
 
-;10110=22
+;001010001110=654
+
+;111010101010
