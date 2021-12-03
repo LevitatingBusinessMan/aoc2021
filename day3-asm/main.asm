@@ -1,9 +1,9 @@
 section .rodata
 	inputfilename db "input.txt", 0
 	inputbufferlen equ 13001
-	arraylen equ 1000
-	resultstr db "g%d e%d m%d",10,0
-	bitarraylen equ 12
+	arraylen equ 12
+	resultstr db "part1 g%d e%d m%d",10,0
+	bitarraylen equ 5
 
 section .bss
 	inputbuffer resb inputbufferlen
@@ -13,8 +13,8 @@ section .bss
 section .text
 	global main
 	extern read_file
-	extern string_to_int
 	extern printf
+	extern part2
 
 main:
 	mov rdi, inputfilename
@@ -94,6 +94,9 @@ main:
 	mov rcx, rbx
 	imul rcx, rdx
 	call printf
+
+	mov rdi, inputbuffer-12	; not sure why that's necessary
+	call part2
 
 	ret
 
