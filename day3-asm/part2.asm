@@ -1,8 +1,7 @@
 
 section .rodata
-	columnlen equ 12
-	rowlen equ 1000
-	resultstr db "part2 o%d c%d m%d", 10, 0
+	columnlen equ 5
+	rowlen equ 12
 
 section .bss
 	bitbuffy resb columnlen
@@ -65,10 +64,10 @@ part2:
 	xor r11, r11
 	movzx r11, byte [r13]
 	cmp r11, 0x30
-	je .0
+	je .zero
 	inc rax
 	jmp .tail
-.0:
+.zero:
 	inc rbx
 .tail:
 	inc rdx
@@ -77,12 +76,25 @@ part2:
 	jmp .count_bit
 
 .finished_column:
+	cmp r8, 0
+	je .oxygen
+	jne .nitrodiox
+.oxygen:
 	cmp rax, rbx
-	jge .greater
+	jg .1
+	je .1
+	jmp .0
+.nitrodiox:
+	cmp rax, rbx
+	jl .1
+	je .0
+	jg .0
+.0:
 	mov byte [bitbuffy+rcx], 0
 	jmp .continue
-.greater:
+.1:
 	mov byte [bitbuffy+rcx], 1
+	jmp .continue
 .continue:
 	inc rcx
 	cmp rcx, columnlen
@@ -116,14 +128,4 @@ part2:
 	cmp rcx, 0
 	jg .next_bit
 
-	mov rdi, resultstr
-	mov rsi, rax
-	mov rdx, 0xffffffffffffffff
-	shr rdx, 64-columnlen
-	xor rdx, rsi
-	mov rcx, rdx
-	imul rcx, rsi
-	call printf
-; 011110000110 right
-; 011110001111 mine
 	ret
