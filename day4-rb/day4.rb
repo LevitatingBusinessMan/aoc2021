@@ -9,29 +9,32 @@ lines = file.split("\n")
 lines.shift 2
 lines.push ""
 
-boards = []
+$boards = []
 current_board = []
 lines.each { |line|
 	if line.empty?
-		boards << current_board
+		$boards << current_board
 		current_board = []
 		next
 	end
 	current_board.concat line.chomp.split(" ").map(&:to_i)
 }
 
-#boards = [boards[0]]
-
+$first = false
 $drawn = []
 def finale board, number
 	score = (board.filter {|x| !$drawn.include? x }).sum * number
-	puts "part1: #{score}"
-	exit
+	if $boards.length == 1
+		puts "part2: #{score}"
+	end
+	$boards.delete_at $boards.find_index board if $boards.find_index board
+	puts "part1: #{score}" if !$first
+	$first = true
 end
 
 numbers_to_draw.each { |number|
 	$drawn << number
-	boards.each { |board|
+	$boards.each { |board|
 		for row in 0..ROWLEN-1
 			finale board, number if board[row*ROWLEN..row*ROWLEN+ROWLEN-1].all? {|x| $drawn.include? x}
 		end
@@ -42,4 +45,3 @@ numbers_to_draw.each { |number|
 		end
 	}
 }
-
