@@ -4,32 +4,7 @@ lines_s = lines.filter {|l| l[0] == l[2] || l[1] == l[3]}
 
 field = Array.new(1000) { Array.new(1000,0) }
 
-lines_s.each { |l|
-	#vertical
-	if l[0] == l[2]
-		for i in l[1] < l[3] ? l[1]..l[3] : l[3]..l[1]
-			field[i][l[0]] += 1
-		end
-		next
-	end
-	#horizontal
-	if l[1] == l[3]
-		for i in l[0] < l[2] ? l[0]..l[2] : l[2]..l[0]
-			field[l[1]][i] += 1
-		end
-		next
-	end
-}
-
-score1 = field.inject(0) {|acc, r|
-	acc += r.count {|e| e >= 2}
-}
-
-puts "part1: #{score1}"
-
-field = Array.new(1000) { Array.new(1000,0) }
-
-lines.each { |l|
+def drawline(l , field)
 	x1, y1, x2, y2 = l
 
 	#vertical
@@ -37,7 +12,7 @@ lines.each { |l|
 		for i in y1 < y2 ? y1..y2 : y2..y1
 			field[i][x1] += 1
 		end
-		next
+		return
 	end
 
 	#horizontal
@@ -45,7 +20,7 @@ lines.each { |l|
 		for i in x1 < x2 ? x1..x2 : x2..x1
 			field[l[1]][i] += 1
 		end
-		next
+		return
 	end
 
 	#diagonal
@@ -54,12 +29,20 @@ lines.each { |l|
 		y = y1 < y2 ? y1+i : y1-i
 		field[y][x] += 1
 	end
-}
+end
+
+lines_s.each {|l| drawline(l,field)}
+
+score1 = field.inject(0) {|acc,r|acc+=r.count{|e| e >= 2}}
+
+puts "part1: #{score1}"
+
+field = Array.new(1000) { Array.new(1000,0) }
+
+lines.each {|l| drawline(l,field)}
 
 # field.each {|r|puts r.join(" ").gsub("0", ".")}
 
-score2 = field.inject(0) {|acc, r|
-	acc += r.count {|e| e >= 2}
-}
+score2 = field.inject(0) {|acc,r|acc+=r.count{|e| e >= 2}}
 
 puts "part2: #{score2}"
