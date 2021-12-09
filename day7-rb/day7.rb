@@ -23,12 +23,20 @@ seq = Enumerator.new do |y|
 	end 
 end
 
+max_dist = 0
+for pos in ns.min..ns.max
+	for n in ns
+		max_dist = (pos-n).abs if max_dist < (pos-n).abs
+	end
+end
+
+full_seq = seq.take max_dist
 fuels = []
 
 for pos in ns.min..ns.max
 	sum_fuel = 0
 	for n in ns
-		sum_fuel += seq.take((pos-n).abs+1)[(pos-n).abs-1]
+		sum_fuel += full_seq[(pos-n).abs-1]
 	end
 	fuels << sum_fuel
 end
